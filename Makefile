@@ -1,3 +1,10 @@
+.DEFAULT_GOAL := generate-proto
+
+ ## build: Generate proto file.
+generate-proto:
+	@echo "Building Proto file..."
+    $(shell ./proto.sh $<)
+
 ## build: Build Dockerfile.
 build:
 	@echo "Building Go Binary..."
