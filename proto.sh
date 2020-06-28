@@ -1,1 +1,1 @@
-docker run --rm -v $(pwd):$(pwd) -w $(pwd) znly/protoc --go_out=. -I. ./cmd/api/product.proto
+docker run --rm -v $(pwd):$(pwd) -w $(pwd) znly/protoc --go_out=plugins=grpc:. -I. ./cmd/service/proto/product.proto
