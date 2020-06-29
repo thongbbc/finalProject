@@ -1,8 +1,24 @@
 version: '3.6'
 services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: anhthong1
+      POSTGRES_DB: simplehttp
   api:
     image: service:latest
     ports:
       - 5000:5000
     volumes:
       - ./:/Volumes/HDWEBSOFT/golang/finalProject
+    links:
+      - db
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

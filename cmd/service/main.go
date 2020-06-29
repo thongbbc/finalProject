@@ -38,7 +38,7 @@ func (s *productService) Delete(context.Context, *product.DeleteReq) (*product.D
 
 func (s *productService) Get(ctx context.Context, req *product.GetReq) (res *product.GetRes, err error) {
 	p := model.Product{}
-	s.DB.Find(&p, req.Id)
+	s.DB.First(&p, req.Id)
 
 	productRet := &product.Product{}
 	p.Fill(productRet)
