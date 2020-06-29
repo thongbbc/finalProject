@@ -8,7 +8,7 @@ generate-proto:
 ## build: Build Dockerfile.
 build:
 	@echo "Building Go Binary..."
-	docker build --no-cache -f Dockerfile -t api .
+	docker build --no-cache -f Dockerfile -t service .
 
 ## start-server: Start in development mode. Gets reloaded automatically when code changes.
 start-server:
