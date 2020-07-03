@@ -16,6 +16,7 @@ func main() {
 	config := config.SetupConfig()
 	// Connect database
 	db := driver.Connect(config.DbHost, config.Port, config.Username, config.Password, config.DbName).DB
+	redisDb := driver.ConnectRedis(config.RedisHost, config.PortRedis).DB
 	db.DropTableIfExists(&model.Product{})
 	db.AutoMigrate(&model.Product{})
 	defer db.Close()
@@ -23,7 +24,7 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	productRepositoryImpl := repoimpl.NewProductRepo(db)
+	productRepositoryImpl := repoimpl.NewProductRepo(db, redisDb)
 
 	product.RegisterProductServiceServer(grpcServer, productRepositoryImpl)
 	fmt.Println("Start service at 5000")

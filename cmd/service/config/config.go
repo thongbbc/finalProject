@@ -13,6 +13,8 @@ type Config struct {
 	DbHost     string
 	Port       string
 	HostServer string
+	PortRedis  string
+	RedisHost  string
 }
 
 func SetupConfig() *Config {
@@ -29,5 +31,7 @@ func SetupConfig() *Config {
 		DbHost:     os.Getenv("db_host"),
 		Port:       os.Getenv("port"),
 		HostServer: os.Getenv("host"),
+		PortRedis:  os.Getenv("portRedis"),
+		RedisHost:  os.Getenv("redis_host"),
 	}
 }
