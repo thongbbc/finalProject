@@ -19,6 +19,7 @@ func main() {
 	redisDb := driver.ConnectRedis(config.RedisHost, config.PortRedis).DB
 	db.DropTableIfExists(&model.Product{})
 	db.AutoMigrate(&model.Product{})
+	redisDb.FlushAll()
 	defer db.Close()
 	lis, _ := net.Listen("tcp", config.HostServer)
 

@@ -6,8 +6,11 @@ import (
 	"finalProject/cmd/service/model"
 	product "finalProject/cmd/service/proto"
 	"finalProject/cmd/service/repository"
+	"fmt"
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 
@@ -27,7 +30,10 @@ func NewProductRepo(db *gorm.DB, redisDb *redis.Client) repository.ProductRepo {
 func (i *ProductRepoImpl) Add(ctx context.Context, req *product.AddReq) (res *product.AddRes, err error) {
 	p := model.Product{}
 	p.Set(req)
-	i.DB.Create(&p)
+	errInsert := i.DB.Create(&p).Error
+	if errInsert != nil {
+		return nil, status.Errorf(codes.AlreadyExists, fmt.Sprintf("Cannot add product SKU=%s Name=%s", req.Sku, req.Name))
+	}
 	productRet := &product.Product{}
 	p.Fill(productRet)
 	res = &product.AddRes{}
@@ -46,9 +52,11 @@ func (i *ProductRepoImpl) Get(ctx context.Context, req *product.GetReq) (res *pr
 	res = &product.GetRes{}
 	if err != nil {
 		p := model.Product{}
-		i.DB.First(&p, req.Id)
-
+		notfound := i.DB.First(&p, req.Id).RecordNotFound()
 		p.Fill(productRet)
+		if notfound == true {
+			return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Not found product with id= %d", req.Id))
+		}
 		json, err := json.Marshal(product.Product{
 			Id:       productRet.Id,
 			Sku:      productRet.Sku,
@@ -58,12 +66,17 @@ func (i *ProductRepoImpl) Get(ctx context.Context, req *product.GetReq) (res *pr
 		})
 		err = i.RedisDb.Set(string(req.Id), json, 0).Err()
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
+		fmt.Println("Get from db", res)
 		res.Product = productRet
 		return res, nil
 	}
+	fmt.Println("Get from redis", res)
 	err = json.Unmarshal([]byte(val), &res.Product)
+	if err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
