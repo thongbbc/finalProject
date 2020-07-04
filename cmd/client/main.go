@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"context"
 	product "finalProject/cmd/service/proto"
 	"fmt"
@@ -9,13 +10,16 @@ import (
 
 func main() {
 	server := "0.0.0.0:5000"
+	getId := flag.Int("id", 1, "an int")
+	flag.Parse()
+	fmt.Println("getId: ", *getId)
 	conn, err := grpc.Dial(server, grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
 	client := product.NewProductServiceClient(conn)
 	testAdd(client)
-	testGet(client)
+	testGet(client, int32(*getId))
 }
 
 func testAdd(client product.ProductServiceClient) {
@@ -31,9 +35,10 @@ func testAdd(client product.ProductServiceClient) {
 	fmt.Println("Response of add method is:", addRes)
 }
 
-func testGet(client product.ProductServiceClient) {
+func testGet(client product.ProductServiceClient, id int32) {
+
 	findReq := product.GetReq{
-		Id:1,
+		Id: id,
 	}
 	findRes, err := client.Get(context.TODO(), &findReq)
 
