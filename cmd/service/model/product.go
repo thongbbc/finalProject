@@ -1,9 +1,11 @@
 package model
+
 import (
 	product "finalProject/cmd/service/proto"
 )
-type Product struct  {
-	Id       int32	`gorm:"primary_key"`
+
+type Product struct {
+	Id       int32 `gorm:"primary_key"`
 	Sku      string
 	Name     string
 	Price    float32
@@ -16,7 +18,6 @@ func (p *Product) Set(in *product.AddReq) {
 	p.Price = in.Price
 	p.Quantity = in.Quantity
 }
-
 
 func (p *Product) Fill(in *product.Product) {
 	in.Id = p.Id
