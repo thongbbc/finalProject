@@ -1,5 +1,9 @@
 version: '3.6'
 services:
+  redisdb:
+    image: redis
+    ports:
+      - "6379:6379"
   db:
     image: postgres
     restart: always
@@ -17,6 +21,7 @@ services:
       - ./:/Volumes/HDWEBSOFT/golang/finalProject
     links:
       - db
+      - redisdb
   adminer:
     image: adminer
     restart: always
