@@ -5,6 +5,7 @@ import (
 	"finalProject/cmd/service/gateway/handlers"
 	handlers "finalProject/cmd/service/gateway/handlers"
 	"finalProject/cmd/service/gateway/repository/repoimpl"
+	"finalProject/cmd/service/product"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +21,13 @@ func (api *API) SetupRouter() *gin.Engine {
 }
 
 
-func InitGateway() *gin.Engine {
-	grpcClient := driver.ConnectProduct("product-service", "5000")
+func InitGateway(host ...string) *gin.Engine {
+	var grpcClient product.ProductServiceClient
+	if host == nil {
+		grpcClient = driver.ConnectProduct("product-service", "5000")
+	} else {
+		grpcClient = driver.ConnectProduct(host[0], "5000")
+	}
 
 	productHandler := handlers.ProductHandler{
 		ProductRepo: repoimpl.NewProductRepo(grpcClient),
