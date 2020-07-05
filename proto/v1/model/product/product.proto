@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+import "proto/v1/model/error/error.proto";
+package proto.v1.model.product;
+option go_package = "finalProject/cmd/service/grpc-model/product";
+
+message AddReq {
+  string sku = 2;
+  string name = 3;
+  float price = 4;
+  int32 quantity = 5;
+}
+
+message AddRes {
+  Product product = 1;
+  repeated proto.v1.model.error.Error error = 2;
+}
+
+message UpdateReq {
+  Product product = 1;
+}
+
+message UpdateRes {
+  Product product = 1;
+  proto.v1.model.error.Error error = 2;
+}
+
+message DeleteReq {
+  int32 id = 1;
+}
+
+message DeleteRes {
+  proto.v1.model.error.Error  error = 1;
+}
+
+message GetReq {
+  int32 id = 1;
+}
+
+message GetRes {
+  Product product = 1;
+  proto.v1.model.error.Error error = 2;
+}
+
+// define Structure
+message Product {
+  int32 id = 1;
+  string sku = 2;
+  string name = 3;
+  float price = 4;
+  int32 quantity = 5;
+}

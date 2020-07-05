@@ -1,20 +1,19 @@
 # finalProject
-BUILD PROJECT
-- docker build --no-cache -f ./Dockerfile -t service .
+This project is an example for Microservice.
 
-RUN PROJECT
-- docker-compose up
+# Run Project by Docker
+`docker-compose up`
 
-OR
+# Run Project by makefile
 
-BUILD PROJECT
-- make build
+### BUILD PROJECT
+`make build`
 
-RUN PROJECT
-- make start-server
+### RUN PROJECT
+`make start-server`
 
-STOP SERVER
-- make stop-server
+### STOP SERVER
+`make stop-server`
 
-WATCH LOG
-- make watch-logs
+### WATCH LOG
+`make watch-logs`
