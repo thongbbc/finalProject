@@ -27,6 +27,8 @@ func main() {
 	productRepositoryImpl := repoimpl.NewProductRepo(db, redisDb)
 
 	product.RegisterProductServiceServer(grpcServer, productRepositoryImpl)
-	fmt.Println("Start service at 5000")
+	fmt.Println("====================================")
+	fmt.Println("Start product service at 5000")
+	fmt.Println("====================================")
 	grpcServer.Serve(lis)
 }

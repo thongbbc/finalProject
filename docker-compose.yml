@@ -13,9 +13,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: anhthong1
       POSTGRES_DB: simplehttp
-  api:
+  product-service:
     build:
-      dockerfile: Dockerfile
+      dockerfile: ./cmd/service/product/Dockerfile
       context: .
     ports:
       - 5000:5000
@@ -24,6 +24,16 @@ services:
     links:
       - db
       - redisdb
+  gateway-service:
+    build:
+      dockerfile: ./cmd/service/gateway/Dockerfile
+      context: .
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/Volumes/HDWEBSOFT/golang/finalProject
+    links:
+      - product-service
   adminer:
     image: adminer
     restart: always

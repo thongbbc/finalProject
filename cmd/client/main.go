@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"finalProject/cmd/service/product"
 	modelProduct "finalProject/cmd/service/grpc-model/product"
+	"finalProject/cmd/service/product"
 	"flag"
 	"fmt"
 	"google.golang.org/grpc"
