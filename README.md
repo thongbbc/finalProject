@@ -6,6 +6,9 @@ This project is an example for Microservice.
 
 # Run Project by makefile
 
+### GENERTE PROTO FILE
+`make`
+
 ### BUILD PROJECT
 `make build`
 
