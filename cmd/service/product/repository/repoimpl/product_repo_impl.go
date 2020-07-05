@@ -3,7 +3,7 @@ package repoimpl
 import (
 	"context"
 	"encoding/json"
-	product "finalProject/cmd/service/grpc-model/product"
+	"finalProject/cmd/service/grpc-model/product"
 	"finalProject/cmd/service/product/model"
 	"finalProject/cmd/service/product/repository"
 	"fmt"

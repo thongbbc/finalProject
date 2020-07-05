@@ -9,6 +9,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.14.6
 	github.com/jinzhu/gorm v1.9.14
 	github.com/joho/godotenv v1.3.0
+	github.com/stretchr/testify v1.4.0
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 	google.golang.org/genproto v0.0.0-20200702021140-07506425bd67
 	google.golang.org/grpc v1.30.0
