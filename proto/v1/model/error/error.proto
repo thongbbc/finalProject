@@ -1,0 +1,10 @@
+
+syntax = "proto3";
+package proto.v1.model.error;
+option go_package = "finalProject/cmd/service/grpc-model/error";
+
+message Error {
+  int32 code  = 1;
+  string message = 2;
+  map<string, string> metadata = 3;
+}

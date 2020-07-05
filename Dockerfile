@@ -3,6 +3,7 @@ WORKDIR /Volumes/HDWEBSOFT/golang/finalProject
 COPY . .
 RUN ["go", "get", "github.com/githubnemo/CompileDaemon"]
 COPY /cmd/service/.env /cmd/service/.env
+COPY /cmd/service/grpc-model /cmd/service/grpc-model
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

@@ -1,9 +1,10 @@
 package main
 
 import (
-	"flag"
 	"context"
-	product "finalProject/cmd/service/proto"
+	"finalProject/cmd/service/product"
+	modelProduct "finalProject/cmd/service/grpc-model/product"
+	"flag"
 	"fmt"
 	"google.golang.org/grpc"
 )
@@ -23,7 +24,7 @@ func main() {
 }
 
 func testAdd(client product.ProductServiceClient) {
-	addReq := product.AddReq{
+	addReq := modelProduct.AddReq{
 		Name: "iphone6",
 		Sku: "IP6",
 		Price: 1000000,
@@ -37,7 +38,7 @@ func testAdd(client product.ProductServiceClient) {
 
 func testGet(client product.ProductServiceClient, id int32) {
 
-	findReq := product.GetReq{
+	findReq := modelProduct.GetReq{
 		Id: id,
 	}
 	findRes, err := client.Get(context.TODO(), &findReq)

@@ -1,13 +1,12 @@
 package main
 
 import (
-	"finalProject/cmd/service/config"
-	"finalProject/cmd/service/driver"
-	"finalProject/cmd/service/model"
-	product "finalProject/cmd/service/proto"
-	"finalProject/cmd/service/repository/repoimpl"
+	"finalProject/cmd/service/product"
+	"finalProject/cmd/service/product/config"
+	"finalProject/cmd/service/product/driver"
+	"finalProject/cmd/service/product/model"
+	"finalProject/cmd/service/product/repository/repoimpl"
 	"fmt"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"google.golang.org/grpc"
 	"net"
 )
