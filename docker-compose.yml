@@ -21,7 +21,7 @@ services:
       - 5000:5000
     volumes:
       - ./:/Volumes/HDWEBSOFT/golang/finalProject
-    links:
+    depends_on:
       - db
       - redisdb
   gateway-service:
@@ -32,7 +32,7 @@ services:
       - 8080:8080
     volumes:
       - ./:/Volumes/HDWEBSOFT/golang/finalProject
-    links:
+    depends_on:
       - product-service
   adminer:
     image: adminer
