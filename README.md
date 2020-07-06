@@ -4,6 +4,10 @@ This project is an example for Microservice.
 # Run Project by Docker
 `docker-compose up`
 
+# Test
+- `cd ./cmd/test`
+- `go test`
+
 # Run Project by makefile
 
 ### GENERTE PROTO FILE
