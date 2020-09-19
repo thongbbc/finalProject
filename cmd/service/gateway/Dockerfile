@@ -1,10 +1,10 @@
 FROM  golang:latest
 WORKDIR /Volumes/HDWEBSOFT/golang/finalProject
-COPY /cmd/service/gateway /cmd/service/gateway
+COPY . .
 RUN ["go", "get", "github.com/githubnemo/CompileDaemon"]
 COPY /cmd/service/.env /cmd/service/.env
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY /cmd/service/gateway/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN chmod 777 /usr/local/bin/docker-entrypoint.sh \
     && ln -s /usr/local/bin/docker-entrypoint.sh /
