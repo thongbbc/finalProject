@@ -8,7 +8,6 @@ import (
 
 func main() {
 	r := router.InitGateway()
-	fmt.Println("====================================")
 	fmt.Println("START gateway service at 3000")
 	fmt.Println("====================================")
 	r.Run()

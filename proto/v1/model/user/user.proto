@@ -9,18 +9,18 @@ message DeleteUserReq {
 }
 
 message DeleteUserRes {
-  proto.v1.model.error.Error  error = 1;
+  int32 id = 1;
 }
 
-message CreateUserReq {
-  string email = 1;
-  string password = 2;
-  string name = 3;
+message CreateUserReq  {
+  string email = 2;
+  string password = 3;
+  string name = 4;
 }
 
 message CreateUserRes {
   User user = 1;
-  repeated  proto.v1.model.error.Error error = 2;
+  repeated proto.v1.model.error.Error error = 2;
 }
 
 message GetUserReq{

@@ -30,7 +30,7 @@ func SetupConfig() *Config {
 		DbName:     os.Getenv("db_name"),
 		DbHost:     os.Getenv("db_host"),
 		Port:       os.Getenv("port"),
-		HostServer: os.Getenv("host"),
+		HostServer: os.Getenv("host_product_service"),
 		PortRedis:  os.Getenv("portRedis"),
 		RedisHost:  os.Getenv("redis_host"),
 	}

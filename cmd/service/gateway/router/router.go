@@ -2,19 +2,25 @@ package router
 
 import (
 	"finalProject/cmd/service/gateway/driver"
-	"finalProject/cmd/service/gateway/handlers"
+
 	handlers "finalProject/cmd/service/gateway/handlers"
 	"finalProject/cmd/service/gateway/repository/repoimpl"
-	"finalProject/cmd/service/product"
+	productService "finalProject/cmd/service/product/service"
+	userService "finalProject/cmd/service/user/service"
+
 	"github.com/gin-gonic/gin"
 )
 
 type API struct {
 	Gin        *gin.Engine
-	ProductHandler productHandler.ProductHandler
+	ProductHandler handlers.ProductHandler
+	UserHandler handlers.UserHandler
 }
 
 func (api *API) SetupRouter() *gin.Engine {
+
+	api.Gin.POST("/user", api.UserHandler.CreateUser)
+	api.Gin.GET("/user/:id", api.UserHandler.GetUser)
 	api.Gin.POST("/product", api.ProductHandler.AddProduct)
 	api.Gin.GET("/product/:id", api.ProductHandler.GetProduct)
 	return api.Gin
@@ -22,21 +28,28 @@ func (api *API) SetupRouter() *gin.Engine {
 
 
 func InitGateway(host ...string) *gin.Engine {
-	var grpcClient product.ProductServiceClient
-	if host == nil {
-		grpcClient = driver.ConnectProduct("product-service", "5000")
-	} else {
-		grpcClient = driver.ConnectProduct(host[0], "5000")
-	}
+	var productClient productService.ProductServiceClient
+	var userClient userService.UserServiceClient
 
+	if host == nil {
+		userClient = driver.ConnectUserService("user-service", "5001")
+		productClient = driver.ConnectProductService("product-service", "5000")
+	} else {
+		userClient = driver.ConnectUserService(host[0], "5001")
+		productClient = driver.ConnectProductService(host[1], "5000")
+	}
+	userHandler := handlers.UserHandler{
+		UserRepo: repoimpl.NewUserRepo(userClient),
+	}
 	productHandler := handlers.ProductHandler{
-		ProductRepo: repoimpl.NewProductRepo(grpcClient),
+		ProductRepo: repoimpl.NewProductRepo(productClient),
 	}
 	// curl -XPOST -H "Content-Type: application/json" --data '{"sku": "P123", "price": 1000}' http://localhost:3000/product
 	// route: product/1
 	api := API{
 		Gin:         gin.Default(),
 		ProductHandler: productHandler,
+		UserHandler: userHandler,
 	}
 
 	r := api.SetupRouter()

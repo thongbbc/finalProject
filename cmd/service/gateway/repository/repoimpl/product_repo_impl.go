@@ -6,7 +6,7 @@ import (
 	"finalProject/cmd/service/gateway/repository"
 	"finalProject/cmd/service/grpc-model/product"
 	modelProduct "finalProject/cmd/service/grpc-model/product"
-	grpc "finalProject/cmd/service/product"
+	grpc "finalProject/cmd/service/product/service"
 )
 
 type ProductRepoImpl struct {

@@ -1,6 +1,6 @@
 package model
 import (
-	product "finalProject/cmd/service/grpc-model/product"
+	"finalProject/cmd/service/grpc-model/product"
 )
 type Product struct  {
 	Id       int32	`gorm:"primary_key"`

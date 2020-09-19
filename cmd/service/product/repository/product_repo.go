@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"finalProject/cmd/service/product"
+	"finalProject/cmd/service/product/service"
 )
 
 type ProductRepo interface {
-	product.ProductServiceServer
+	service.ProductServiceServer
 }

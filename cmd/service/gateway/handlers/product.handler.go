@@ -1,4 +1,4 @@
-package productHandler
+package handlers
 
 import (
 	"finalProject/cmd/service/gateway/repository"
@@ -12,7 +12,7 @@ import (
 type ProductHandler struct {
 	ProductRepo repository.ProductRepo
 }
-
+// curl -XPOST -H "Content-Type: application/json" --data '{"sku": "P123", "price": 1000}' http://localhost:3000/product
 func (h ProductHandler) AddProduct(c *gin.Context)  {
 	p := &modelProduct.AddReq{}
 	c.BindJSON(p)
@@ -24,6 +24,8 @@ func (h ProductHandler) AddProduct(c *gin.Context)  {
 	fmt.Println("Response of add method is:", addRes)
 	c.JSON(http.StatusOK, addRes)
 }
+
+// route: product/1
 func (h ProductHandler) GetProduct(c *gin.Context)  {
 	id, paramError := strconv.Atoi(c.Param("id"))
 	if paramError != nil {

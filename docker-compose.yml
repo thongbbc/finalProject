@@ -24,6 +24,18 @@ services:
     depends_on:
       - db
       - redisdb
+  user-service:
+    build:
+      dockerfile: ./cmd/service/user/Dockerfile
+      context: .
+    ports:
+      - 5001:5001
+    volumes:
+      - ./:/Volumes/HDWEBSOFT/golang/finalProject
+    depends_on:
+      - db
+      - product-service
+      - redisdb
   gateway-service:
     build:
       dockerfile: ./cmd/service/gateway/Dockerfile
@@ -34,6 +46,7 @@ services:
       - ./:/Volumes/HDWEBSOFT/golang/finalProject
     depends_on:
       - product-service
+      - user-service
   adminer:
     image: adminer
     restart: always

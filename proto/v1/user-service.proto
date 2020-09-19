@@ -1,10 +1,10 @@
 syntax = "proto3";
 import "proto/v1/model/user/user.proto";
 package proto.v1.userService;
-option go_package = "service/user";
+option go_package = "service/user/service";
 
 service UserService {
   rpc CreateUser(proto.v1.model.user.CreateUserReq) returns(proto.v1.model.user.CreateUserRes);
   rpc DeleteUser(proto.v1.model.user.DeleteUserReq) returns(proto.v1.model.user.DeleteUserRes);
-  rpc Get(proto.v1.model.user.GetUserReq) returns(proto.v1.model.user.GetUserRes);
+  rpc GetUser(proto.v1.model.user.GetUserReq) returns(proto.v1.model.user.GetUserRes);
 }
