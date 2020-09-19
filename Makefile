@@ -6,9 +6,12 @@ generate-proto:
     $(shell ./proto.sh $<)
 
 ## build: Build Dockerfile.
-build:
+build-service-user:
 	@echo "Building Go Binary..."
-	docker build --no-cache -f Dockerfile -t service .
+	docker build --no-cache -f Dockerfile -t user .
+build-service-product:
+	@echo "Building Go Binary..."
+	docker build --no-cache -f Dockerfile -t product .
 
 ## start-server: Start in development mode. Gets reloaded automatically when code changes.
 start-server:

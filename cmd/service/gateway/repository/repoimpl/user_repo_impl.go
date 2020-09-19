@@ -18,13 +18,13 @@ func NewUserRepo(grpcClient grpc.UserServiceClient) repository.UserRepo {
 	return &UserRepoImpl{GrpcClient: grpcClient}
 }
 
-func (i *UserRepoImpl) CreateUser(ctx context.Context, req *user.CreateUserReq) (res *user.CreateUserRes, err error) {
+func (i *UserRepoImpl) RegisterUser(ctx context.Context, req *user.CreateUserReq) (res *user.CreateUserRes, err error) {
 	addReq := modelUser.CreateUserReq{
 		Name: req.Name,
 		Email: req.Email,
 		Password: req.Password,
 	}
-	addRes, err := i.GrpcClient.CreateUser(ctx, &addReq)
+	addRes, err := i.GrpcClient.RegisterUser(ctx, &addReq)
 	if err != nil {
 		return nil, errorResponse.AddFail
 	}

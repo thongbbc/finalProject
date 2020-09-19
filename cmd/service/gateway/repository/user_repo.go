@@ -6,6 +6,6 @@ import (
 )
 
 type UserRepo interface {
-	CreateUser(context.Context, *proto_v1_model_user.CreateUserReq) (*proto_v1_model_user.CreateUserRes, error)
+	RegisterUser(context.Context, *proto_v1_model_user.CreateUserReq) (*proto_v1_model_user.CreateUserRes, error)
 	GetUser(context.Context, *proto_v1_model_user.GetUserReq) (*proto_v1_model_user.GetUserRes, error)
 }

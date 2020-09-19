@@ -1,6 +1,6 @@
 FROM  golang:latest
 WORKDIR /Volumes/HDWEBSOFT/golang/finalProject
-COPY . .
+COPY /cmd/service/gateway /cmd/service/gateway
 RUN ["go", "get", "github.com/githubnemo/CompileDaemon"]
 COPY /cmd/service/.env /cmd/service/.env
 

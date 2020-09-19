@@ -20,12 +20,11 @@ type UserRepoImpl struct {
 	RedisDb *redis.Client
 }
 
-
-func (i *UserRepoImpl) DeleteUser(context.Context, *user.DeleteUserReq) (*user.DeleteUserRes, error) {
+func (i *UserRepoImpl) Login(context.Context, *user.GetUserReq) (*user.GetUserRes, error) {
 	panic("implement me")
 }
 
-func (i *UserRepoImpl) Get(context.Context, *user.GetUserReq) (*user.GetUserRes, error) {
+func (i *UserRepoImpl) DeleteUser(context.Context, *user.DeleteUserReq) (*user.DeleteUserRes, error) {
 	panic("implement me")
 }
 
@@ -36,7 +35,7 @@ func NewUserRepo(db *gorm.DB, redisDb *redis.Client) repository.UserRepo {
 	}
 }
 
-func (i *UserRepoImpl) CreateUser(ctx context.Context, req *user.CreateUserReq) (res *user.CreateUserRes, err error) {
+func (i *UserRepoImpl) RegisterUser(ctx context.Context, req *user.CreateUserReq) (res *user.CreateUserRes, err error) {
 	p := model.User{}
 	p.Set(req)
 	errInsert := i.DB.Create(&p).Error
@@ -47,7 +46,8 @@ func (i *UserRepoImpl) CreateUser(ctx context.Context, req *user.CreateUserReq) 
 	p.Fill(userRet)
 	res = &user.CreateUserRes{}
 	res.User = userRet
-	return res, nil}
+	return res, nil
+}
 
 func (i *UserRepoImpl) GetUser(ctx context.Context, req *user.GetUserReq) (res *user.GetUserRes, err error) {
 	val, err := i.RedisDb.Get(string(req.Id)).Result()

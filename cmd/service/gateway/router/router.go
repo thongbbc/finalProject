@@ -18,8 +18,12 @@ type API struct {
 }
 
 func (api *API) SetupRouter() *gin.Engine {
+	v1 := api.Gin.Group("/api/v1")
+	//auth
+	auth := v1.Group("/auth")
+	auth.POST("/register", api.UserHandler.RegisterUser)
+	auth.POST("/login", api.UserHandler.GetUser)
 
-	api.Gin.POST("/user", api.UserHandler.CreateUser)
 	api.Gin.GET("/user/:id", api.UserHandler.GetUser)
 	api.Gin.POST("/product", api.ProductHandler.AddProduct)
 	api.Gin.GET("/product/:id", api.ProductHandler.GetProduct)
