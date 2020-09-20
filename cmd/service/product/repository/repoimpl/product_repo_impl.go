@@ -47,16 +47,16 @@ func (i *ProductRepoImpl) Delete(context.Context, *product.DeleteReq) (*product.
 	return nil, nil
 }
 func (i *ProductRepoImpl) Get(ctx context.Context, req *product.GetReq) (res *product.GetRes, err error) {
-	val, err := i.RedisDb.Get(string(req.Id)).Result()
+	val, redisError := i.RedisDb.Get(string(req.Id)).Result()
 	productRet := &product.Product{}
 	res = &product.GetRes{}
-	if err != nil {
+	if redisError != nil {
 		p := model.Product{}
-		notfound := i.DB.First(&p, req.Id).RecordNotFound()
-		p.Fill(productRet)
-		if notfound == true {
-			return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Not found product with id= %d", req.Id))
+		notfound := i.DB.First(&p, req.Id).Error
+		if notfound != nil {
+			return nil, status.Error(codes.NotFound, fmt.Sprintf("Not found product with id= %d", req.Id))
 		}
+		p.Fill(productRet)
 		json, err := json.Marshal(product.Product{
 			Id:       productRet.Id,
 			Sku:      productRet.Sku,
@@ -72,6 +72,7 @@ func (i *ProductRepoImpl) Get(ctx context.Context, req *product.GetReq) (res *pr
 		res.Product = productRet
 		return res, nil
 	}
+
 	fmt.Println("Get from redis", res)
 	err = json.Unmarshal([]byte(val), &res.Product)
 	if err != nil {

@@ -1,43 +1,47 @@
 package repoimpl
 
 import (
-	"context"
 	"finalProject/cmd/service/gateway/errorResponse"
 	"finalProject/cmd/service/gateway/repository"
-	"finalProject/cmd/service/grpc-model/product"
 	modelProduct "finalProject/cmd/service/grpc-model/product"
 	grpc "finalProject/cmd/service/product/service"
+	"fmt"
+	"github.com/gin-gonic/gin"
 )
 
 type ProductRepoImpl struct {
 	GrpcClient grpc.ProductServiceClient
 }
 
+
 func NewProductRepo(grpcClient grpc.ProductServiceClient) repository.ProductRepo {
 	return &ProductRepoImpl{GrpcClient: grpcClient}
 }
-
-func (i *ProductRepoImpl) Add(ctx context.Context, req *product.AddReq) (res *product.AddRes, err error) {
+func (i *ProductRepoImpl) Add(c *gin.Context, req *modelProduct.AddReq) (res *modelProduct.AddRes, err error) {
 	addReq := modelProduct.AddReq{
 		Name: req.Name,
 		Sku: req.Sku,
 		Price: req.Price,
 		Quantity: req.Quantity,
 	}
-	addRes, err := i.GrpcClient.Add(ctx, &addReq)
+	addRes, err := i.GrpcClient.Add(c, &addReq)
 	if err != nil {
 		return nil, errorResponse.AddFail
 	}
 	return addRes, nil
 }
 
-func (i *ProductRepoImpl) Get(ctx context.Context, req *product.GetReq) (res *product.GetRes, err error) {
+func (i *ProductRepoImpl) Get(c *gin.Context, req *modelProduct.GetReq) (res *modelProduct.GetRes, err error) {
 	findReq := modelProduct.GetReq{
 		Id: req.Id,
 	}
-	findRes, err := i.GrpcClient.Get(context.TODO(), &findReq)
+	findRes, err := i.GrpcClient.Get(c, &findReq)
+
 	if err != nil {
-		return nil, errorResponse.GetFail
+		return nil, err
 	}
+
+	fmt.Println("Get data", findRes)
+	fmt.Println("Get data", err)
 	return findRes, nil
 }

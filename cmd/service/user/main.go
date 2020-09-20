@@ -4,8 +4,8 @@ import (
 	configUser "finalProject/cmd/service/user/config"
 	"finalProject/cmd/service/user/service"
 
-	"finalProject/cmd/service/product/driver"
-	"finalProject/cmd/service/product/model"
+	"finalProject/cmd/service/user/driver"
+	"finalProject/cmd/service/user/model"
 	userRepo "finalProject/cmd/service/user/repository/repoimpl"
 
 	"fmt"
@@ -18,8 +18,8 @@ func main() {
 	// Connect database
 	db := driver.Connect(configUser.DbHost, configUser.Port, configUser.Username, configUser.Password, configUser.DbName).DB
 	redisDb := driver.ConnectRedis(configUser.RedisHost, configUser.PortRedis).DB
-	db.DropTableIfExists(&model.Product{})
-	db.AutoMigrate(&model.Product{})
+	db.DropTableIfExists(&model.User{})
+	db.AutoMigrate(&model.User{})
 	redisDb.FlushAll()
 	defer db.Close()
 	lisUser, _ := net.Listen("tcp", configUser.HostServer)

@@ -20,10 +20,9 @@ func (h UserHandler) RegisterUser(c *gin.Context)  {
 	c.BindJSON(p)
 	addRes, err := h.UserRepo.RegisterUser(c, p)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "Register failed!"})
 		return
 	}
-	fmt.Println("Response of add method is:", addRes)
 	c.JSON(http.StatusOK, addRes)
 }
 // route: user/1

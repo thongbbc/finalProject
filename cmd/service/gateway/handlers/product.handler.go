@@ -28,8 +28,8 @@ func (h ProductHandler) AddProduct(c *gin.Context)  {
 // route: product/1
 func (h ProductHandler) GetProduct(c *gin.Context)  {
 	id, paramError := strconv.Atoi(c.Param("id"))
-	if paramError != nil {
-		c.JSON(http.StatusBadRequest, paramError)
+	if paramError != nil || c.Param("id") == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "Your request invalid!"})
 		return
 	}
 	getReq := &modelProduct.GetReq{
@@ -37,8 +37,9 @@ func (h ProductHandler) GetProduct(c *gin.Context)  {
 	}
 
 	getRes, err := h.ProductRepo.Get(c, getReq)
+
 	if err != nil {
-		c.JSON(http.StatusNotFound, err)
+		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": "Product not found!"})
 		return
 	}
 	fmt.Println("Response of Get method is:", getRes)

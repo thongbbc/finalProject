@@ -40,7 +40,7 @@ func (i *UserRepoImpl) RegisterUser(ctx context.Context, req *user.CreateUserReq
 	p.Set(req)
 	errInsert := i.DB.Create(&p).Error
 	if errInsert != nil {
-		return nil, status.Errorf(codes.AlreadyExists, fmt.Sprint("Cannot add user"))
+		return nil, status.Errorf(codes.AlreadyExists, fmt.Sprint("Register failed!"))
 	}
 	userRet := &user.User{}
 	p.Fill(userRet)
@@ -58,7 +58,7 @@ func (i *UserRepoImpl) GetUser(ctx context.Context, req *user.GetUserReq) (res *
 		notfound := i.DB.First(&p, req.Id).RecordNotFound()
 		p.Fill(userRet)
 		if notfound == true {
-			return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Not found product with id= %d", req.Id))
+			return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Not found user with id= %d", req.Id))
 		}
 		json, err := json.Marshal(user.User{
 			Id:       userRet.Id,

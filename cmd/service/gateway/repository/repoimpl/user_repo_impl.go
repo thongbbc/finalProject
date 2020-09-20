@@ -1,9 +1,9 @@
 package repoimpl
 
 import (
-	"finalProject/cmd/service/gateway/errorResponse"
 	"finalProject/cmd/service/grpc-model/user"
 	grpc "finalProject/cmd/service/user/service"
+	"fmt"
 
 	"context"
 	"finalProject/cmd/service/gateway/repository"
@@ -25,8 +25,9 @@ func (i *UserRepoImpl) RegisterUser(ctx context.Context, req *user.CreateUserReq
 		Password: req.Password,
 	}
 	addRes, err := i.GrpcClient.RegisterUser(ctx, &addReq)
+	fmt.Printf("%s", err)
 	if err != nil {
-		return nil, errorResponse.AddFail
+		return nil, err
 	}
 	return addRes, nil
 }
@@ -37,7 +38,7 @@ func (i *UserRepoImpl) GetUser(ctx context.Context, req *user.GetUserReq) (res *
 	}
 	findRes, err := i.GrpcClient.GetUser(context.TODO(), &findReq)
 	if err != nil {
-		return nil, errorResponse.GetFail
+		return nil, err
 	}
 	return findRes, nil
 }
