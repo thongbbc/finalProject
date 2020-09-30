@@ -3,13 +3,14 @@
 package handlers
 
 import (
-	"finalProject/cmd/service/gateway/models"
 	"finalProject/cmd/service/gateway/repository"
 	modelUser "finalProject/cmd/service/grpc-model/user"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type UserHandler struct {
@@ -29,6 +30,9 @@ type UserHandler struct {
 func (h UserHandler) RegisterUser(c *gin.Context)  {
 	p := &modelUser.CreateUserReq{}
 	c.BindJSON(p)
+	// Hashing the password with the default cost of 10
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(p.Password), bcrypt.DefaultCost)
+	p.Password = string(hashedPassword)
 	addRes, err := h.UserRepo.RegisterUser(c, p)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "Register failed!"})
@@ -66,18 +70,23 @@ func (h UserHandler) GetUser(c *gin.Context)  {
 // @Router /auth/login [post]
 // curl -XPOST -H "Content-Type: application/json" --data '{"password": "test", "email": "test@gmail.com"}' http://localhost:3000/v1/auth/login
 func (h UserHandler) Login(c *gin.Context)  {
-	p := &models.LoginReq{}
+	p := &modelUser.LoginReq{}
 	errBindJson := c.BindJSON(p)
 	if errBindJson != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": "Bad request"})
 		return
 	}
-	getReq := &modelUser.GetUserByEmailReq{
+
+	getReq := &modelUser.LoginReq{
 		Email: p.Email,
+		Password: p.Password,
 	}
 
-	getRes, err := h.UserRepo.GetUserByEmail(c, getReq)
-	if err != nil {
+	getRes, err := h.UserRepo.Login(c, getReq)
+	if err != nil && strings.Contains(err.Error(), "Unavailable") {
+		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": "Wrong password!"})
+		return
+	} else if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": "User not found!"})
 		return
 	}

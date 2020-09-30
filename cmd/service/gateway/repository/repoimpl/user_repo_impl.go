@@ -1,15 +1,14 @@
 package repoimpl
 
 import (
+	"context"
 	"finalProject/cmd/service/gateway/models"
 	"finalProject/cmd/service/gateway/repository"
 	"finalProject/cmd/service/gateway/services"
 	"finalProject/cmd/service/grpc-model/user"
+	modelUser "finalProject/cmd/service/grpc-model/user"
 	grpc "finalProject/cmd/service/user/service"
 	"fmt"
-
-	"context"
-	modelUser "finalProject/cmd/service/grpc-model/user"
 )
 
 type UserRepoImpl struct {
@@ -22,12 +21,13 @@ func NewUserRepo(grpcClient grpc.UserServiceClient, jwtService services.JWTServi
 	return &UserRepoImpl{GrpcClient: grpcClient, JWtService: jwtService}
 }
 
-func (i *UserRepoImpl) GetUserByEmail(ctx context.Context, req *modelUser.GetUserByEmailReq) (*models.AuthenticationRes, error) {
-	findReq := modelUser.GetUserByEmailReq{
+func (i *UserRepoImpl) Login(ctx context.Context, req *modelUser.LoginReq) (*models.AuthenticationRes, error) {
+	findReq := modelUser.LoginReq{
 		Email: req.Email,
+		Password: req.Password,
 	}
 	loginResponse := &models.AuthenticationRes{}
-	findRes, err := i.GrpcClient.GetUserByEmail(context.TODO(), &findReq)
+	findRes, err := i.GrpcClient.Login(context.TODO(), &findReq)
 	if err != nil {
 		return nil, err
 	}

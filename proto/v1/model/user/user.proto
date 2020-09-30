@@ -32,8 +32,9 @@ message GetUserRes {
   proto.v1.model.error.Error error = 2;
 }
 
-message GetUserByEmailReq{
+message LoginReq{
   string email = 1;
+  string password = 2;
 }
 
 message User {

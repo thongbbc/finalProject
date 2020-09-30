@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -20,7 +21,7 @@ type UserRepoImpl struct {
 	RedisDb *redis.Client
 }
 
-func (i *UserRepoImpl) GetUserByEmail(ctx context.Context, req *user.GetUserByEmailReq) (res *user.GetUserRes, err error) {
+func (i *UserRepoImpl) Login(ctx context.Context, req *user.LoginReq) (res *user.GetUserRes, err error) {
 	userRet := &user.User{}
 	res = &user.GetUserRes{}
 	p := model.User{}
@@ -29,12 +30,12 @@ func (i *UserRepoImpl) GetUserByEmail(ctx context.Context, req *user.GetUserByEm
 	if notfound == true {
 		return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Not found user with email= %s", req.Email))
 	}
+	hashError := bcrypt.CompareHashAndPassword([]byte(p.Password), []byte(req.Password))
+	if hashError != nil {
+		return nil, status.Errorf(codes.Unavailable, fmt.Sprintf("Wrong password!"))
+	}
 	res.User = userRet
 	return res, nil
-}
-
-func (i *UserRepoImpl) Login(context.Context, *user.GetUserReq) (*user.GetUserRes, error) {
-	panic("implement me")
 }
 
 func (i *UserRepoImpl) DeleteUser(context.Context, *user.DeleteUserReq) (*user.DeleteUserRes, error) {
