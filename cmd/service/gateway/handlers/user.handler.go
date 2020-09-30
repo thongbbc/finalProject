@@ -22,7 +22,7 @@ type UserHandler struct {
 // @Description register user
 // @Accept  json
 // @Produce  json
-// @Param CreateUserReq body models.CreateUserReq true "Create order"
+// @Param Register body models.CreateUserReq true "Register User"
 // @Success 201 {object} models.CreateUserReq
 // @Failure 400 {object} models.ErrorResponse
 // @Router /auth/register [post]
@@ -64,7 +64,7 @@ func (h UserHandler) GetUser(c *gin.Context)  {
 // @Description Login user
 // @Accept  json
 // @Produce  json
-// @Param CreateUserReq body models.LoginReq true "Create order"
+// @Param Login body models.LoginReq true "Login Account"
 // @Success 201 {object} models.AuthenticationRes
 // @Failure 400 {object} models.ErrorResponse
 // @Router /auth/login [post]

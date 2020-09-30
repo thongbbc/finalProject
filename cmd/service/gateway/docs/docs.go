@@ -45,8 +45,8 @@ var doc = `{
                 "summary": "Login user",
                 "parameters": [
                     {
-                        "description": "Create order",
-                        "name": "CreateUserReq",
+                        "description": "Login Account",
+                        "name": "Login",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -82,8 +82,8 @@ var doc = `{
                 "summary": "Register user",
                 "parameters": [
                     {
-                        "description": "Create order",
-                        "name": "CreateUserReq",
+                        "description": "Register User",
+                        "name": "Register",
                         "in": "body",
                         "required": true,
                         "schema": {

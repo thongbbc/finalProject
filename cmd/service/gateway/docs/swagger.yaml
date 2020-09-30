@@ -50,9 +50,9 @@ paths:
       - application/json
       description: Login user
       parameters:
-      - description: Create order
+      - description: Login Account
         in: body
-        name: CreateUserReq
+        name: Login
         required: true
         schema:
           $ref: '#/definitions/models.LoginReq'
@@ -74,9 +74,9 @@ paths:
       - application/json
       description: register user
       parameters:
-      - description: Create order
+      - description: Register User
         in: body
-        name: CreateUserReq
+        name: Register
         required: true
         schema:
           $ref: '#/definitions/models.CreateUserReq'
