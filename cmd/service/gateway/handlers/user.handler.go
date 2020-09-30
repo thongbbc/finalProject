@@ -14,6 +14,16 @@ import (
 type UserHandler struct {
 	UserRepo repository.UserRepo
 }
+
+
+// @Summary Register user
+// @Description register user
+// @Accept  json
+// @Produce  json
+// @Param CreateUserReq body models.CreateUserReq true "Create order"
+// @Success 201 {object} models.CreateUserReq
+// @Failure 400 {object} models.ErrorResponse
+// @Router /auth/register [post]
 // curl -XPOST -H "Content-Type: application/json" --data '{"name": "test", "email": "test@gmail.com"}' http://localhost:3000/v1/auth/register
 func (h UserHandler) RegisterUser(c *gin.Context)  {
 	p := &modelUser.CreateUserReq{}

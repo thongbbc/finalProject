@@ -12,8 +12,6 @@ import (
 	"net/http"
 	"os"
 )
-
-
 // @title Thong API
 // @version 1.0
 // @description This is a server build by golang.
@@ -34,7 +32,6 @@ import (
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-
 func main() {
 	r := router.InitGateway()
 
