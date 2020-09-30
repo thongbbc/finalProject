@@ -1,5 +1,12 @@
 basePath: /api/v1
 definitions:
+  models.AuthenticationRes:
+    properties:
+      email:
+        type: string
+      jwt:
+        type: string
+    type: object
   models.CreateUserReq:
     properties:
       email:
@@ -16,6 +23,13 @@ definitions:
       message:
         type: string
     type: object
+  models.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -30,6 +44,30 @@ info:
   title: Thong API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: Create order
+        in: body
+        name: CreateUserReq
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.AuthenticationRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Login user
   /auth/register:
     post:
       consumes:

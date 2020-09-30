@@ -1,22 +1,42 @@
 package repoimpl
 
 import (
+	"finalProject/cmd/service/gateway/models"
+	"finalProject/cmd/service/gateway/repository"
+	"finalProject/cmd/service/gateway/services"
 	"finalProject/cmd/service/grpc-model/user"
 	grpc "finalProject/cmd/service/user/service"
 	"fmt"
 
 	"context"
-	"finalProject/cmd/service/gateway/repository"
 	modelUser "finalProject/cmd/service/grpc-model/user"
 )
 
 type UserRepoImpl struct {
 	GrpcClient grpc.UserServiceClient
+	JWtService services.JWTService
 }
 
-func NewUserRepo(grpcClient grpc.UserServiceClient) repository.UserRepo {
-	return &UserRepoImpl{GrpcClient: grpcClient}
+
+func NewUserRepo(grpcClient grpc.UserServiceClient, jwtService services.JWTService) repository.UserRepo {
+	return &UserRepoImpl{GrpcClient: grpcClient, JWtService: jwtService}
 }
+
+func (i *UserRepoImpl) GetUserByEmail(ctx context.Context, req *modelUser.GetUserByEmailReq) (*models.AuthenticationRes, error) {
+	findReq := modelUser.GetUserByEmailReq{
+		Email: req.Email,
+	}
+	loginResponse := &models.AuthenticationRes{}
+	findRes, err := i.GrpcClient.GetUserByEmail(context.TODO(), &findReq)
+	if err != nil {
+		return nil, err
+	}
+	loginResponse.Email = findRes.GetUser().Email
+	jwt := i.JWtService.GenerateToken(loginResponse.Email, true)
+	loginResponse.JWT = jwt
+	return loginResponse, nil
+}
+
 
 func (i *UserRepoImpl) RegisterUser(ctx context.Context, req *user.CreateUserReq) (res *user.CreateUserRes, err error) {
 	addReq := modelUser.CreateUserReq{

@@ -9,4 +9,5 @@ service UserService {
 
   rpc DeleteUser(proto.v1.model.user.DeleteUserReq) returns(proto.v1.model.user.DeleteUserRes);
   rpc GetUser(proto.v1.model.user.GetUserReq) returns(proto.v1.model.user.GetUserRes);
+  rpc GetUserByEmail(proto.v1.model.user.GetUserByEmailReq) returns(proto.v1.model.user.GetUserRes);
 }

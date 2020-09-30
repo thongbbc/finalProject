@@ -3,6 +3,7 @@ package repoimpl
 import (
 	"finalProject/cmd/service/gateway/errorResponse"
 	"finalProject/cmd/service/gateway/repository"
+	"finalProject/cmd/service/gateway/services"
 	modelProduct "finalProject/cmd/service/grpc-model/product"
 	grpc "finalProject/cmd/service/product/service"
 	"fmt"
@@ -11,11 +12,12 @@ import (
 
 type ProductRepoImpl struct {
 	GrpcClient grpc.ProductServiceClient
+	JWtService services.JWTService
 }
 
 
-func NewProductRepo(grpcClient grpc.ProductServiceClient) repository.ProductRepo {
-	return &ProductRepoImpl{GrpcClient: grpcClient}
+func NewProductRepo(grpcClient grpc.ProductServiceClient, jwtService services.JWTService) repository.ProductRepo {
+	return &ProductRepoImpl{GrpcClient: grpcClient, JWtService: jwtService}
 }
 func (i *ProductRepoImpl) Add(c *gin.Context, req *modelProduct.AddReq) (res *modelProduct.AddRes, err error) {
 	addReq := modelProduct.AddReq{

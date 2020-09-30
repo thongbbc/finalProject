@@ -2,12 +2,11 @@ package router
 
 import (
 	"finalProject/cmd/service/gateway/driver"
-
+	services "finalProject/cmd/service/gateway/services"
 	handlers "finalProject/cmd/service/gateway/handlers"
 	"finalProject/cmd/service/gateway/repository/repoimpl"
 	productService "finalProject/cmd/service/product/service"
 	userService "finalProject/cmd/service/user/service"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,9 +21,9 @@ func (api *API) SetupRouter() *gin.Engine {
 	//auth
 	auth := v1.Group("/auth")
 	auth.POST("/register", api.UserHandler.RegisterUser)
-	auth.POST("/login", api.UserHandler.GetUser)
+	auth.POST("/login", api.UserHandler.Login)
 
-	api.Gin.GET("/user/:id", api.UserHandler.GetUser)
+	//api.Gin.GET("/user/:id", api.UserHandler.GetUser)
 	api.Gin.POST("/product", api.ProductHandler.AddProduct)
 	api.Gin.GET("/product/:id", api.ProductHandler.GetProduct)
 	return api.Gin
@@ -34,6 +33,7 @@ func (api *API) SetupRouter() *gin.Engine {
 func InitGateway(host ...string) *gin.Engine {
 	var productClient productService.ProductServiceClient
 	var userClient userService.UserServiceClient
+	var jwtService services.JWTService = services.JWTAuthService()
 
 	if host == nil {
 		userClient = driver.ConnectUserService("user-service", "5001")
@@ -43,10 +43,10 @@ func InitGateway(host ...string) *gin.Engine {
 		productClient = driver.ConnectProductService(host[1], "5000")
 	}
 	userHandler := handlers.UserHandler{
-		UserRepo: repoimpl.NewUserRepo(userClient),
+		UserRepo: repoimpl.NewUserRepo(userClient, jwtService),
 	}
 	productHandler := handlers.ProductHandler{
-		ProductRepo: repoimpl.NewProductRepo(productClient),
+		ProductRepo: repoimpl.NewProductRepo(productClient, jwtService),
 	}
 	// curl -XPOST -H "Content-Type: application/json" --data '{"sku": "P123", "price": 1000}' http://localhost:3000/product
 	// route: product/1

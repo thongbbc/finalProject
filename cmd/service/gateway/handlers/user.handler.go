@@ -3,6 +3,7 @@
 package handlers
 
 import (
+	"finalProject/cmd/service/gateway/models"
 	"finalProject/cmd/service/gateway/repository"
 	modelUser "finalProject/cmd/service/grpc-model/user"
 	"fmt"
@@ -49,6 +50,35 @@ func (h UserHandler) GetUser(c *gin.Context)  {
 	getRes, err := h.UserRepo.GetUser(c, getReq)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
+		return
+	}
+	fmt.Println("Response of Get method is:", getRes)
+	c.JSON(http.StatusOK, getRes)
+}
+
+// @Summary Login user
+// @Description Login user
+// @Accept  json
+// @Produce  json
+// @Param CreateUserReq body models.LoginReq true "Create order"
+// @Success 201 {object} models.AuthenticationRes
+// @Failure 400 {object} models.ErrorResponse
+// @Router /auth/login [post]
+// curl -XPOST -H "Content-Type: application/json" --data '{"password": "test", "email": "test@gmail.com"}' http://localhost:3000/v1/auth/login
+func (h UserHandler) Login(c *gin.Context)  {
+	p := &models.LoginReq{}
+	errBindJson := c.BindJSON(p)
+	if errBindJson != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": "Bad request"})
+		return
+	}
+	getReq := &modelUser.GetUserByEmailReq{
+		Email: p.Email,
+	}
+
+	getRes, err := h.UserRepo.GetUserByEmail(c, getReq)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": "User not found!"})
 		return
 	}
 	fmt.Println("Response of Get method is:", getRes)

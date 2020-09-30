@@ -20,6 +20,19 @@ type UserRepoImpl struct {
 	RedisDb *redis.Client
 }
 
+func (i *UserRepoImpl) GetUserByEmail(ctx context.Context, req *user.GetUserByEmailReq) (res *user.GetUserRes, err error) {
+	userRet := &user.User{}
+	res = &user.GetUserRes{}
+	p := model.User{}
+	notfound := i.DB.Where("email = ?", req.Email).First(&p).RecordNotFound()
+	p.Fill(userRet)
+	if notfound == true {
+		return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Not found user with email= %s", req.Email))
+	}
+	res.User = userRet
+	return res, nil
+}
+
 func (i *UserRepoImpl) Login(context.Context, *user.GetUserReq) (*user.GetUserRes, error) {
 	panic("implement me")
 }
@@ -45,6 +58,8 @@ func (i *UserRepoImpl) RegisterUser(ctx context.Context, req *user.CreateUserReq
 	userRet := &user.User{}
 	p.Fill(userRet)
 	res = &user.CreateUserRes{}
+	//Remove password response
+	userRet.Password = ""
 	res.User = userRet
 	return res, nil
 }
@@ -80,3 +95,5 @@ func (i *UserRepoImpl) GetUser(ctx context.Context, req *user.GetUserReq) (res *
 	}
 	return res, nil
 }
+
+

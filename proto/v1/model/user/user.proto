@@ -32,6 +32,10 @@ message GetUserRes {
   proto.v1.model.error.Error error = 2;
 }
 
+message GetUserByEmailReq{
+  string email = 1;
+}
+
 message User {
   int32 id = 1;
   string email = 2;
