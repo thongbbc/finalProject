@@ -5,10 +5,11 @@ import (
 	"finalProject/cmd/service/gateway/models"
 	"finalProject/cmd/service/gateway/repository"
 	"finalProject/cmd/service/gateway/services"
+	grpcError "finalProject/cmd/service/grpc-model/error"
 	"finalProject/cmd/service/grpc-model/user"
 	modelUser "finalProject/cmd/service/grpc-model/user"
 	grpc "finalProject/cmd/service/user/service"
-	"fmt"
+	"google.golang.org/grpc/codes"
 )
 
 type UserRepoImpl struct {
@@ -21,16 +22,26 @@ func NewUserRepo(grpcClient grpc.UserServiceClient, jwtService services.JWTServi
 	return &UserRepoImpl{GrpcClient: grpcClient, JWtService: jwtService}
 }
 
-func (i *UserRepoImpl) Login(ctx context.Context, req *modelUser.LoginReq) (*models.AuthenticationRes, error) {
+func (i *UserRepoImpl) Login(ctx context.Context, req *modelUser.LoginReq) (*models.AuthenticationRes, *grpcError.Error) {
 	findReq := modelUser.LoginReq{
 		Email: req.Email,
 		Password: req.Password,
 	}
-	loginResponse := &models.AuthenticationRes{}
 	findRes, err := i.GrpcClient.Login(context.TODO(), &findReq)
-	if err != nil {
-		return nil, err
+	if err != nil || findRes.Error != nil  {
+		messageError := "Login Failed"
+		if  findRes.Error != nil && findRes.Error.Message != "" {
+			return nil ,  &grpcError.Error{
+				Code: findRes.Error.Code,
+				Message: findRes.Error.Message,
+			}
+		}
+		return nil, &grpcError.Error{
+			Code: int32(codes.Unauthenticated),
+			Message: messageError,
+		}
 	}
+	loginResponse := &models.AuthenticationRes{}
 	loginResponse.Email = findRes.GetUser().Email
 	jwt := i.JWtService.GenerateToken(loginResponse.Email, true)
 	loginResponse.JWT = jwt
@@ -45,7 +56,6 @@ func (i *UserRepoImpl) RegisterUser(ctx context.Context, req *user.CreateUserReq
 		Password: req.Password,
 	}
 	addRes, err := i.GrpcClient.RegisterUser(ctx, &addReq)
-	fmt.Printf("%s", err)
 	if err != nil {
 		return nil, err
 	}

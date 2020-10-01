@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc/codes"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 type UserHandler struct {
@@ -34,8 +34,12 @@ func (h UserHandler) RegisterUser(c *gin.Context)  {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(p.Password), bcrypt.DefaultCost)
 	p.Password = string(hashedPassword)
 	addRes, err := h.UserRepo.RegisterUser(c, p)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "Register failed!"})
+	if err != nil || addRes.Error != nil {
+		messageError := "Register failed!"
+		if addRes.Error !=nil && addRes.Error.Message != "" {
+			messageError = addRes.Error.Message
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": messageError})
 		return
 	}
 	c.JSON(http.StatusOK, addRes)
@@ -83,13 +87,15 @@ func (h UserHandler) Login(c *gin.Context)  {
 	}
 
 	getRes, err := h.UserRepo.Login(c, getReq)
-	if err != nil && strings.Contains(err.Error(), "Unavailable") {
-		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": "Wrong password!"})
+	if err != nil && err.Message != "" && err.Code == int32(codes.Unauthenticated) {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": err.Message})
+		return
+	} else if err != nil && err.Message != "" && err.Code == int32(codes.NotFound)  {
+		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": err.Message})
 		return
 	} else if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": "User not found!"})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 404, "message": "Login Failed"})
 		return
 	}
-	fmt.Println("Response of Get method is:", getRes)
 	c.JSON(http.StatusOK, getRes)
 }

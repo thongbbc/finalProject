@@ -3,6 +3,7 @@ package repoimpl
 import (
 	"context"
 	"encoding/json"
+	errorGrpc "finalProject/cmd/service/grpc-model/error"
 	"finalProject/cmd/service/grpc-model/user"
 	"finalProject/cmd/service/user/model"
 	"finalProject/cmd/service/user/repository"
@@ -28,13 +29,22 @@ func (i *UserRepoImpl) Login(ctx context.Context, req *user.LoginReq) (res *user
 	notfound := i.DB.Where("email = ?", req.Email).First(&p).RecordNotFound()
 	p.Fill(userRet)
 	if notfound == true {
-		return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Not found user with email= %s", req.Email))
+		res.Error = &errorGrpc.Error{
+			Code: int32(codes.NotFound),
+			Message: fmt.Sprintf("Not found user with email= %s", req.Email),
+		}
+		return res, nil
 	}
 	hashError := bcrypt.CompareHashAndPassword([]byte(p.Password), []byte(req.Password))
-	if hashError != nil {
-		return nil, status.Errorf(codes.Unavailable, fmt.Sprintf("Wrong password!"))
+	if hashError != nil || err != nil {
+		res.Error = &errorGrpc.Error{
+			Code: int32(codes.Unauthenticated),
+			Message: "Wrong Password!",
+		}
+		return res, nil
 	}
 	res.User = userRet
+	res.Error = nil
 	return res, nil
 }
 
@@ -53,12 +63,16 @@ func (i *UserRepoImpl) RegisterUser(ctx context.Context, req *user.CreateUserReq
 	p := model.User{}
 	p.Set(req)
 	errInsert := i.DB.Create(&p).Error
+	res = &user.CreateUserRes{}
 	if errInsert != nil {
-		return nil, status.Errorf(codes.AlreadyExists, fmt.Sprint("Register failed!"))
+		res.Error = &errorGrpc.Error{
+			Code: int32(codes.AlreadyExists),
+			Message: "Register failed!",
+		}
+		return res, nil
 	}
 	userRet := &user.User{}
 	p.Fill(userRet)
-	res = &user.CreateUserRes{}
 	//Remove password response
 	userRet.Password = ""
 	res.User = userRet

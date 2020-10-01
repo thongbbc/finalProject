@@ -20,7 +20,7 @@ message CreateUserReq  {
 
 message CreateUserRes {
   User user = 1;
-  repeated proto.v1.model.error.Error error = 2;
+  proto.v1.model.error.Error error = 2;
 }
 
 message GetUserReq{
