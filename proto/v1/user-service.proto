@@ -1,7 +1,7 @@
 syntax = "proto3";
 import "proto/v1/model/user/user.proto";
 package proto.v1.userService;
-option go_package = "service/user/service";
+option go_package = "service";
 
 service UserService {
   rpc RegisterUser(proto.v1.model.user.CreateUserReq) returns(proto.v1.model.user.CreateUserRes);

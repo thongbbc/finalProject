@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "proto/v1/model/error/error.proto";
 package proto.v1.model.product;
-option go_package = "finalProject/cmd/service/grpc-model/product";
+option go_package = "grpc-model/product";
 
 message AddReq {
   string sku = 2;

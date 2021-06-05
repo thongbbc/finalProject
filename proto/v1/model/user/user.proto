@@ -2,7 +2,7 @@ syntax = "proto3";
 import "proto/v1/model/error/error.proto";
 
 package proto.v1.model.user;
-option go_package = "finalProject/cmd/service/grpc-model/user";
+option go_package = "grpc-model/user";
 
 message DeleteUserReq {
   int32 id = 1;
